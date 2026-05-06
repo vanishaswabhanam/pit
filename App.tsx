@@ -8,7 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -244,15 +244,19 @@ const SEAT_SLOTS = [
 ];
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     DMSerifDisplay_400Regular,
     DMSerifDisplay_400Regular_Italic,
     DMMono_400Regular,
   });
 
   useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded]);
+    if (!(fontsLoaded || fontError)) return;
+    if (fontError) {
+      console.warn('[pit] Fonts failed to load; falling back to system fonts:', fontError);
+    }
+    SplashScreen.hideAsync().catch(() => {});
+  }, [fontsLoaded, fontError]);
 
   const [vibe, setVibe] = useState<Vibe>('nostalgic');
   const [qIndex, setQIndex] = useState(2);
@@ -290,11 +294,12 @@ export default function App() {
     [],
   );
 
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded && !fontError) return null;
 
   const vibes: Vibe[] = ['light', 'deep', 'chaotic', 'nostalgic', 'spicy'];
 
   return (
+    <SafeAreaProvider>
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
 
@@ -389,6 +394,7 @@ export default function App() {
       </View>
 
     </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
