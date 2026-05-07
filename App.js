@@ -9,26 +9,26 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Pressable,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
-import {
-  SafeAreaProvider,
-  SafeAreaView,
-} from 'react-native-safe-area-context';
+import PitRingFrame, { RING_BY_VIBE } from './components/PitRingFrame';
 
+/** Locked palette — Pit design system */
 const COLORS = {
-  cream: '#E8E4C0',
-  sand: '#F2E8D5',
+  cream: '#EBE4CD',
+  sand: '#F2EED5',
   ink: '#1C1A14',
-  gray: '#8A7B6A',
-  grayLight: '#C4B9AC',
-  green: '#3D6B4F',
-  yellow: '#EFEF50',
-  blue: '#B8C8D8',
-  cranberry: '#8C5560',
+  gray: '#8A7D6A',
+  grayLight: '#D5CEC4',
+  green: '#3D5B4F',
+  yellow: '#EFE750',
+  blue: '#BDCDE0',
+  cranberry: '#8E555D',
   dusty: '#C9837A',
   peach: '#F0DBC8',
 };
@@ -37,23 +37,23 @@ const CARD_THEME = {
   light: {
     bg: COLORS.cream,
     meta: '#6A6430',
-    question: '#1C1A14',
+    question: COLORS.ink,
     dotFilled: '#6A6430',
     dotEmpty: 'rgba(106,100,48,0.25)',
   },
   deep: {
     bg: COLORS.green,
-    meta: '#8AB89A',
-    question: '#E8F4EC',
-    dotFilled: '#8AB89A',
-    dotEmpty: 'rgba(138,184,154,0.25)',
+    meta: '#9BC4AA',
+    question: '#F2FAF4',
+    dotFilled: '#9BC4AA',
+    dotEmpty: 'rgba(155,196,170,0.25)',
   },
   chaotic: {
     bg: COLORS.yellow,
-    meta: '#7A7A00',
-    question: '#1C1A14',
-    dotFilled: '#7A7A00',
-    dotEmpty: 'rgba(122,122,0,0.25)',
+    meta: '#6B6500',
+    question: COLORS.ink,
+    dotFilled: '#6B6500',
+    dotEmpty: 'rgba(107,101,0,0.25)',
   },
   nostalgic: {
     bg: COLORS.blue,
@@ -64,10 +64,10 @@ const CARD_THEME = {
   },
   spicy: {
     bg: COLORS.cranberry,
-    meta: '#E0BCC2',
-    question: '#FAF0F2',
-    dotFilled: '#E0BCC2',
-    dotEmpty: 'rgba(224,188,194,0.25)',
+    meta: '#F0D6DA',
+    question: '#FAF4F5',
+    dotFilled: '#F0D6DA',
+    dotEmpty: 'rgba(240,214,218,0.25)',
   },
 };
 
@@ -95,7 +95,7 @@ const PILL_ACTIVE = {
   spicy: {
     backgroundColor: COLORS.cranberry,
     borderColor: 'transparent',
-    color: '#F0D0D4',
+    color: '#F8E4E8',
   },
 };
 
@@ -267,9 +267,18 @@ const QUESTIONS = {
   ],
 };
 
-const VIBES = ['light', 'deep', 'chaotic', 'nostalgic', 'spicy'];
+/** Vibe list + pill rows — derived from QUESTIONS so keys never drift. */
+const VIBES = Object.keys(QUESTIONS);
+const VIBE_ROWS = [VIBES.slice(0, 3), VIBES.slice(3)];
 
 export default function App() {
+  const { width: windowWidth } = useWindowDimensions();
+  /** SVG pit ring size — balanced for phone width. */
+  const ringSize = Math.min(Math.max(windowWidth - 40, 272), 336);
+
+  /** Demo headcount — replace with virtual room presence later */
+  const [playersInPit] = useState(4);
+
   const [fontsLoaded] = useFonts({
     'DMSerif-Regular': DMSerifDisplay_400Regular,
     'DMSerif-Italic': DMSerifDisplay_400Regular_Italic,
@@ -291,14 +300,14 @@ export default function App() {
     (applyChange) => {
       Animated.timing(cardOpacity, {
         toValue: 0,
-        duration: 175,
+        duration: 200,
         useNativeDriver: true,
       }).start(({ finished }) => {
         if (!finished) return;
         applyChange();
         Animated.timing(cardOpacity, {
           toValue: 1,
-          duration: 175,
+          duration: 220,
           useNativeDriver: true,
         }).start();
       });
@@ -351,23 +360,22 @@ export default function App() {
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, backgroundColor: COLORS.sand }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.sand }}>
         <StatusBar style="dark" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider>
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <StatusBar style="dark" />
       <View pointerEvents="none" style={grainStyle} />
-      <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
+      <ScrollView
+        style={styles.scrollFlex}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
           <View style={styles.app}>
             <View style={styles.header}>
               <Text style={styles.wordmark}>drop a topic</Text>
@@ -375,91 +383,67 @@ export default function App() {
             </View>
 
             <Text style={styles.vibeLabel}>pick a vibe</Text>
-            <View style={styles.vibeRow}>
-              {VIBES.map((v) => {
-                const active = v === currentVibe;
-                const activeStyle = active ? PILL_ACTIVE[v] : {};
-                return (
-                  <Pressable
-                    key={v}
-                    onPress={() => setVibe(v)}
-                    style={({ pressed }) => [
-                      styles.vibePill,
-                      !active && styles.vibePillIdle,
-                      activeStyle,
-                      pressed && styles.pressed,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.vibePillText,
-                        !active && { color: COLORS.gray },
-                        active && { color: activeStyle.color },
-                      ]}
-                    >
-                      {v}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+            <View style={styles.vibeRowsOuter}>
+              {VIBE_ROWS.map((row, ri) => (
+                <View key={ri} style={styles.vibeRow}>
+                  {row.map((v) => {
+                    const active = v === currentVibe;
+                    const activeStyle = active ? PILL_ACTIVE[v] : {};
+                    return (
+                      <Pressable
+                        key={v}
+                        onPress={() => setVibe(v)}
+                        style={({ pressed }) => [
+                          styles.vibePill,
+                          !active && styles.vibePillIdle,
+                          activeStyle,
+                          pressed && styles.pressed,
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.vibePillText,
+                            !active && { color: COLORS.gray },
+                            active && { color: activeStyle.color },
+                          ]}
+                        >
+                          {v}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ))}
             </View>
 
+            <Text style={styles.depthRibbon}>
+              depth {current.depth} of 3 · {currentVibe}
+            </Text>
+
             <View style={styles.cardWrap}>
-              <Animated.View
-                style={[
-                  styles.card,
-                  {
-                    backgroundColor: theme.bg,
-                    opacity: cardOpacity,
-                  },
-                ]}
-              >
-                <View>
-                  <View style={styles.depthLabelRow}>
-                    <View style={styles.depthDots}>
-                      {[0, 1, 2].map((i) => (
-                        <View
-                          key={i}
-                          style={[
-                            styles.depthDot,
-                            {
-                              backgroundColor:
-                                i < current.depth
-                                  ? theme.dotFilled
-                                  : theme.dotEmpty,
-                            },
-                          ]}
-                        />
-                      ))}
-                    </View>
-                    <Text style={[styles.depthTxt, { color: theme.meta }]}>
-                      depth {current.depth} of 3
-                    </Text>
-                  </View>
-                  <Text style={[styles.questionText, { color: theme.question }]}>
-                    {current.q}
-                  </Text>
-                </View>
-                <View style={styles.cardBottom}>
-                  <Text style={[styles.vibeTag, { color: theme.meta }]}>
-                    {currentVibe}
-                  </Text>
-                </View>
+              <Animated.View style={{ opacity: cardOpacity }}>
+                <PitRingFrame
+                  ring={RING_BY_VIBE[currentVibe]}
+                  metaUpper={`${currentVibe} · ${current.depth}/3`}
+                  question={current.q}
+                  questionColor={theme.question}
+                  metaColor={theme.meta}
+                  cardBg={theme.bg}
+                  size={ringSize}
+                  playerCount={playersInPit}
+                  dashColor={COLORS.gray}
+                />
               </Animated.View>
             </View>
 
-            <View
-              style={[
-                styles.deeperWrap,
-                !deeperVisible && styles.deeperHidden,
-              ]}
-              pointerEvents={deeperVisible ? 'auto' : 'none'}
-            >
-              <View style={styles.deeperCard}>
-                <Text style={styles.deeperEyebrow}>go deeper ↓</Text>
-                <Text style={styles.deeperText}>{current.follow}</Text>
+            {deeperVisible ? (
+              <View style={styles.deeperWrap}>
+                <View style={styles.deeperCard}>
+                  <Text style={styles.deeperEyebrow}>go deeper ↓</Text>
+                  <Text style={styles.deeperText}>{current.follow}</Text>
+                </View>
               </View>
-            </View>
+            ) : null}
 
             <View style={styles.actions}>
               <Pressable
@@ -505,10 +489,8 @@ export default function App() {
               </Pressable>
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
-    </SafeAreaProvider>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -517,11 +499,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.sand,
   },
-  safe: {
+  scrollFlex: {
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
+    paddingTop: 8,
     paddingBottom: 48,
   },
   app: {
@@ -531,42 +513,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   header: {
-    paddingTop: 36,
-    paddingBottom: 28,
+    paddingTop: 10,
+    paddingBottom: 22,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
+  depthRibbon: {
+    fontFamily: 'DMMono-Regular',
+    fontSize: 12,
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
+    color: COLORS.gray,
+    textAlign: 'center',
+    marginBottom: 14,
+  },
   wordmark: {
     fontFamily: 'DMSerif-Italic',
-    fontSize: 22,
+    fontSize: 28,
     color: COLORS.ink,
-    letterSpacing: -0.2,
+    letterSpacing: -0.35,
   },
   sessionInfo: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 10,
-    letterSpacing: 1.2,
+    fontSize: 12,
+    letterSpacing: 1.35,
     textTransform: 'uppercase',
     color: COLORS.gray,
   },
   vibeLabel: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 9,
-    letterSpacing: 1.6,
+    fontSize: 11,
+    letterSpacing: 1.75,
     textTransform: 'uppercase',
     color: COLORS.gray,
-    marginBottom: 10,
+    marginBottom: 12,
+  },
+  vibeRowsOuter: {
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 22,
   },
   vibeRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     gap: 7,
-    marginBottom: 32,
+    justifyContent: 'center',
+    width: '100%',
   },
   vibePill: {
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    paddingVertical: 9,
+    paddingHorizontal: 16,
     borderRadius: 999,
     borderWidth: 1,
   },
@@ -576,8 +573,8 @@ const styles = StyleSheet.create({
   },
   vibePillText: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 10,
-    letterSpacing: 0.6,
+    fontSize: 12,
+    letterSpacing: 0.65,
     textTransform: 'lowercase',
   },
   pressed: {
@@ -585,64 +582,12 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   cardWrap: {
-    marginBottom: 24,
-  },
-  card: {
-    borderRadius: 20,
-    paddingHorizontal: 28,
-    paddingTop: 32,
-    paddingBottom: 28,
-    minHeight: 280,
-    justifyContent: 'space-between',
-    overflow: 'hidden',
-  },
-  depthLabelRow: {
-    flexDirection: 'row',
+    marginBottom: 28,
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 20,
-  },
-  depthDots: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  depthDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-  },
-  depthTxt: {
-    fontFamily: 'DMMono-Regular',
-    fontSize: 9,
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-  },
-  questionText: {
-    fontFamily: 'DMSerif-Regular',
-    fontSize: 26,
-    lineHeight: 32,
-    letterSpacing: -0.2,
-  },
-  cardBottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: 28,
-  },
-  vibeTag: {
-    fontFamily: 'DMMono-Regular',
-    fontSize: 9,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
   },
   deeperWrap: {
     marginBottom: 28,
-    opacity: 1,
-    transform: [{ translateY: 0 }],
-  },
-  deeperHidden: {
-    opacity: 0,
-    transform: [{ translateY: 8 }],
+    width: '100%',
   },
   deeperCard: {
     backgroundColor: COLORS.peach,
@@ -654,28 +599,29 @@ const styles = StyleSheet.create({
   },
   deeperEyebrow: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 9,
-    letterSpacing: 1.4,
+    fontSize: 11,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
     color: COLORS.dusty,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   deeperText: {
     fontFamily: 'DMSerif-Regular',
-    fontSize: 17,
-    lineHeight: 23,
+    fontSize: 19,
+    lineHeight: 26,
     color: '#5A2E1E',
   },
   actions: {
     flexDirection: 'row',
-    gap: 10,
-    marginBottom: 20,
+    gap: 12,
+    marginTop: 32,
+    marginBottom: 22,
   },
   btn: {
     flex: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    borderRadius: 12,
+    paddingVertical: 17,
+    paddingHorizontal: 20,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.grayLight,
     alignItems: 'center',
@@ -683,8 +629,8 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 11,
-    letterSpacing: 0.8,
+    fontSize: 13,
+    letterSpacing: 0.95,
     textTransform: 'uppercase',
     color: COLORS.gray,
   },
@@ -705,21 +651,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 16,
+    paddingTop: 10,
+    paddingBottom: 22,
   },
   counter: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 10,
-    letterSpacing: 1,
+    fontSize: 12,
+    letterSpacing: 1.05,
     color: COLORS.gray,
   },
   saveBtn: {
     fontFamily: 'DMMono-Regular',
-    fontSize: 10,
-    letterSpacing: 1,
+    fontSize: 12,
+    letterSpacing: 1.05,
     textTransform: 'uppercase',
     color: COLORS.gray,
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   saveBtnSaved: {
     color: COLORS.dusty,
