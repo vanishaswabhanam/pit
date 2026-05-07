@@ -1,0 +1,244 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#E8E4C0;--sand:#F2E8D5;--ink:#1C1A14;--gray:#8A7B6A;
+  --green:#3D6B4F;--yellow:#EFEF50;--blue:#B8C8D8;
+  --cranberry:#8C5560;--dusty:#C9837A;--peach:#F0DBC8;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary);}
+.page{padding:1.5rem 0 3rem;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:.6rem;text-align:center;}
+.concept-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--color-text-primary);text-align:center;margin-bottom:.3rem;}
+.concept-sub{font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:1.4rem;line-height:1.5;}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:2.5rem 0;}
+
+/* PHONE FRAME */
+.phone{width:220px;margin:0 auto;background:var(--sand);border-radius:32px;border:1.5px solid rgba(28,26,20,.15);overflow:hidden;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.08);}
+
+/* ═══════════════════════════════
+   CONCEPT 01 — OVERHEAD PIT VIEW
+═══════════════════════════════ */
+.c1-screen{background:var(--sand);padding:28px 18px 22px;}
+.c1-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.c1-wordmark{font-family:'DM Serif Display',serif;font-style:italic;font-size:13px;color:var(--ink);}
+.c1-meta{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);}
+.pit-svg-wrap{width:100%;display:flex;justify-content:center;margin-bottom:14px;}
+.c1-prompt{font-family:'DM Serif Display',serif;font-size:13px;color:var(--ink);text-align:center;line-height:1.4;padding:0 4px;margin-bottom:16px;}
+.c1-actions{display:flex;gap:7px;}
+.c1-btn{flex:1;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;padding:9px 6px;border-radius:8px;border:0.5px solid rgba(138,123,106,.4);background:transparent;color:var(--gray);text-align:center;}
+.c1-btn.primary{border-color:var(--dusty);color:var(--dusty);}
+
+/* ═══════════════════════════════
+   CONCEPT 02 — DEPTH AS DESCENT
+═══════════════════════════════ */
+.c2-screen{position:relative;overflow:hidden;min-height:380px;}
+.c2-sky{background:var(--cream);padding:22px 18px 12px;position:relative;}
+.c2-sky-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#6A6430;margin-bottom:6px;}
+.c2-wordmark{font-family:'DM Serif Display',serif;font-style:italic;font-size:13px;color:var(--ink);margin-bottom:14px;}
+.c2-walls{background:linear-gradient(180deg,#C4B060 0%,#3D6B4F 100%);padding:0 14px;position:relative;}
+.c2-wall-labels{display:flex;justify-content:space-between;padding:8px 0 4px;}
+.c2-wall-label{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.c2-card{background:rgba(255,255,255,.12);border:0.5px solid rgba(255,255,255,.2);border-radius:12px;padding:14px;margin:0 0 12px;}
+.c2-depth-bar{display:flex;gap:4px;margin-bottom:10px;}
+.c2-dot{width:5px;height:5px;border-radius:50%;}
+.c2-question{font-family:'DM Serif Display',serif;font-size:12px;color:#E8F4EC;line-height:1.35;}
+.c2-floor{background:#2A4A38;padding:10px 14px 18px;display:flex;justify-content:space-between;align-items:center;}
+.c2-floor-label{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:rgba(138,184,154,.6);}
+.c2-floor-btn{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.06em;text-transform:uppercase;color:#8AB89A;border:0.5px solid rgba(138,184,154,.3);border-radius:6px;padding:5px 9px;background:transparent;}
+
+/* ═══════════════════════════════
+   CONCEPT 03 — PIT RING FRAME
+═══════════════════════════════ */
+.c3-screen{background:var(--sand);padding:24px 16px 22px;}
+.c3-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.c3-wordmark{font-family:'DM Serif Display',serif;font-style:italic;font-size:13px;color:var(--ink);}
+.c3-meta{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);}
+.c3-ring-wrap{position:relative;width:188px;height:188px;margin:0 auto 16px;}
+.c3-depth{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);text-align:center;margin-bottom:10px;}
+.c3-actions{display:flex;gap:7px;}
+.c3-btn{flex:1;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;padding:9px 6px;border-radius:8px;border:0.5px solid rgba(138,123,106,.4);background:transparent;color:var(--gray);text-align:center;}
+.c3-btn.primary{border-color:var(--dusty);color:var(--dusty);}
+</style>
+
+<div class="page">
+
+<!-- ══ CONCEPT 01 ══ -->
+<div class="section-label">concept 01</div>
+<div class="concept-title">Overhead Pit View</div>
+<div class="concept-sub">The home screen is the pit, seen from above.<br>Question appears in the center like it's on the table.</div>
+
+<div class="phone">
+  <div class="c1-screen">
+    <div class="c1-header">
+      <span class="c1-wordmark">drop a topic</span>
+      <span class="c1-meta">in the pit</span>
+    </div>
+    <div class="pit-svg-wrap">
+      <svg width="184" height="184" viewBox="0 0 184 184" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- floor -->
+        <rect x="0" y="0" width="184" height="184" rx="16" fill="#D4CFA0"/>
+        <!-- pit floor -->
+        <rect x="28" y="28" width="128" height="128" rx="10" fill="#C4BA8A"/>
+        <!-- pit border/step -->
+        <rect x="28" y="28" width="128" height="128" rx="10" fill="none" stroke="#8A7030" stroke-width="3"/>
+        <!-- sofa segments — top -->
+        <rect x="38" y="30" width="108" height="18" rx="5" fill="#3D6B4F"/>
+        <rect x="50" y="32" width="22" height="14" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="80" y="32" width="22" height="14" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="110" y="32" width="22" height="14" rx="3" fill="#4A8060" opacity=".7"/>
+        <!-- sofa — bottom -->
+        <rect x="38" y="136" width="108" height="18" rx="5" fill="#3D6B4F"/>
+        <rect x="50" y="138" width="22" height="14" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="80" y="138" width="22" height="14" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="110" y="138" width="22" height="14" rx="3" fill="#4A8060" opacity=".7"/>
+        <!-- sofa — left -->
+        <rect x="30" y="38" width="18" height="108" rx="5" fill="#3D6B4F"/>
+        <rect x="32" y="50" width="14" height="22" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="32" y="80" width="14" height="22" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="32" y="110" width="14" height="22" rx="3" fill="#4A8060" opacity=".7"/>
+        <!-- sofa — right -->
+        <rect x="136" y="38" width="18" height="108" rx="5" fill="#3D6B4F"/>
+        <rect x="138" y="50" width="14" height="22" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="138" y="80" width="14" height="22" rx="3" fill="#4A8060" opacity=".7"/>
+        <rect x="138" y="110" width="14" height="22" rx="3" fill="#4A8060" opacity=".7"/>
+        <!-- coffee table -->
+        <rect x="66" y="66" width="52" height="52" rx="8" fill="#8A7030" opacity=".5"/>
+        <rect x="70" y="70" width="44" height="44" rx="6" fill="#A08840" opacity=".4"/>
+        <!-- question card on table -->
+        <rect x="72" y="72" width="40" height="40" rx="5" fill="#E8E4C0" opacity=".95"/>
+        <rect x="76" y="77" width="32" height="2" rx="1" fill="#6A6430" opacity=".5"/>
+        <rect x="76" y="82" width="28" height="2" rx="1" fill="#1C1A14" opacity=".5"/>
+        <rect x="76" y="87" width="30" height="2" rx="1" fill="#1C1A14" opacity=".5"/>
+        <rect x="76" y="92" width="24" height="2" rx="1" fill="#1C1A14" opacity=".4"/>
+        <!-- people dots -->
+        <circle cx="92" cy="44" r="5" fill="#E8E4C0" stroke="#1C1A14" stroke-width="1"/>
+        <circle cx="92" cy="140" r="5" fill="#EFEF50" stroke="#1C1A14" stroke-width="1"/>
+        <circle cx="44" cy="92" r="5" fill="#B8C8D8" stroke="#1C1A14" stroke-width="1"/>
+        <circle cx="140" cy="92" r="5" fill="#8C5560" stroke="#1C1A14" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="c1-prompt">What's a belief you used to hold?</div>
+    <div class="c1-actions">
+      <div class="c1-btn">shuffle ↻</div>
+      <div class="c1-btn primary">go deeper</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══ CONCEPT 02 ══ -->
+<div class="section-label">concept 02</div>
+<div class="concept-title">Depth as Descent</div>
+<div class="concept-sub">The UI is a cross-section. Light questions live at the<br>surface. Deeper ones pull you down into the pit.</div>
+
+<div class="phone">
+  <div class="c2-screen">
+    <!-- sky / surface -->
+    <div class="c2-sky">
+      <div class="c2-sky-label">surface — depth 3 of 3</div>
+      <div class="c2-wordmark">drop a topic</div>
+      <!-- depth ladder on side -->
+      <div style="position:absolute;right:14px;top:22px;display:flex;flex-direction:column;gap:4px;align-items:center;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#6A6430;"></div>
+        <div style="width:1px;height:12px;background:rgba(106,100,48,.3);"></div>
+        <div style="width:6px;height:6px;border-radius:50%;background:#5A8068;"></div>
+        <div style="width:1px;height:12px;background:rgba(90,128,104,.3);"></div>
+        <div style="width:8px;height:8px;border-radius:50%;background:#3D6B4F;border:1.5px solid #8AB89A;"></div>
+      </div>
+    </div>
+    <!-- wall gradient = going down -->
+    <div class="c2-walls">
+      <div class="c2-wall-labels">
+        <div class="c2-wall-label">↑ surface</div>
+        <div class="c2-wall-label">in the pit ↓</div>
+      </div>
+      <!-- the card -->
+      <div class="c2-card">
+        <div class="c2-depth-bar">
+          <div class="c2-dot" style="background:#8AB89A;"></div>
+          <div class="c2-dot" style="background:#8AB89A;"></div>
+          <div class="c2-dot" style="background:#8AB89A;"></div>
+        </div>
+        <div class="c2-question">What version of yourself did you have to leave behind?</div>
+      </div>
+    </div>
+    <!-- pit floor -->
+    <div class="c2-floor">
+      <div class="c2-floor-label">bottom of the pit</div>
+      <div class="c2-floor-btn">shuffle ↻</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══ CONCEPT 03 ══ -->
+<div class="section-label">concept 03</div>
+<div class="concept-title">Pit Ring Frame</div>
+<div class="concept-sub">The question card sits inside an illustrated pit ring.<br>Player dots appear around the edges in virtual mode.</div>
+
+<div class="phone">
+  <div class="c3-screen">
+    <div class="c3-header">
+      <span class="c3-wordmark">drop a topic</span>
+      <span class="c3-meta">4 in the pit</span>
+    </div>
+    <div class="c3-depth">depth 2 of 3 · nostalgic</div>
+    <div class="c3-ring-wrap">
+      <svg width="188" height="188" viewBox="0 0 188 188" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- outer rim -->
+        <rect x="4" y="4" width="180" height="180" rx="22" fill="none" stroke="#8A7B6A" stroke-width="1" stroke-dasharray="3 4"/>
+        <!-- sofa ring top -->
+        <rect x="14" y="6" width="160" height="22" rx="8" fill="#B8C8D8"/>
+        <rect x="24" y="9" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="50" y="9" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="78" y="9" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="106" y="9" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="134" y="9" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <!-- sofa ring bottom -->
+        <rect x="14" y="160" width="160" height="22" rx="8" fill="#B8C8D8"/>
+        <rect x="24" y="163" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="50" y="163" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="78" y="163" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="106" y="163" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="134" y="163" width="18" height="16" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <!-- sofa ring left -->
+        <rect x="6" y="14" width="22" height="160" rx="8" fill="#B8C8D8"/>
+        <rect x="9" y="24" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="9" y="50" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="9" y="78" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="9" y="106" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="9" y="134" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <!-- sofa ring right -->
+        <rect x="160" y="14" width="22" height="160" rx="8" fill="#B8C8D8"/>
+        <rect x="163" y="24" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="163" y="50" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="163" y="78" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="163" y="106" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <rect x="163" y="134" width="16" height="18" rx="4" fill="#A0B8CC" opacity=".7"/>
+        <!-- pit floor -->
+        <rect x="32" y="32" width="124" height="124" rx="10" fill="#D4CFA0"/>
+        <!-- question card -->
+        <rect x="42" y="42" width="104" height="104" rx="10" fill="#E8E4C0"/>
+        <text x="94" y="74" font-family="Georgia,serif" font-style="italic" font-size="9" fill="#3A5A7A" text-anchor="middle" letter-spacing="1">NOSTALGIC · 2/3</text>
+        <text x="94" y="92" font-family="Georgia,serif" font-size="11" fill="#1A2A3A" text-anchor="middle">What's a summer</text>
+        <text x="94" y="107" font-family="Georgia,serif" font-size="11" fill="#1A2A3A" text-anchor="middle">you keep going</text>
+        <text x="94" y="122" font-family="Georgia,serif" font-size="11" fill="#1A2A3A" text-anchor="middle">back to?</text>
+        <!-- player dots around ring -->
+        <circle cx="94" cy="17" r="6" fill="#E8E4C0" stroke="#1A2A3A" stroke-width="1.2"/>
+        <circle cx="171" cy="94" r="6" fill="#EFEF50" stroke="#1A2A3A" stroke-width="1.2"/>
+        <circle cx="94" cy="171" r="6" fill="#8C5560" stroke="#FAF0F2" stroke-width="1.2"/>
+        <circle cx="17" cy="94" r="6" fill="#3D6B4F" stroke="#C8E0D2" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div class="c3-actions">
+      <div class="c3-btn">shuffle ↻</div>
+      <div class="c3-btn primary">go deeper</div>
+    </div>
+  </div>
+</div>
+
+</div>

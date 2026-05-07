@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>drop a topic</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #E8E4C0;
+    --sand: #F2E8D5;
+    --ink: #1C1A14;
+    --gray: #8A7B6A;
+    --gray-light: #C4B9AC;
+    --green: #3D6B4F;
+    --yellow: #EFEF50;
+    --blue: #B8C8D8;
+    --cranberry: #8C5560;
+    --dusty: #C9837A;
+    --peach: #F0DBC8;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--sand);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 52px 0 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .wordmark {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -.01em;
+  }
+
+  .session-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  /* ── VIBE PICKER ── */
+  .vibe-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 10px;
+  }
+
+  .vibe-row {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .vibe-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all .2s ease;
+    background: transparent;
+    color: var(--gray);
+    border-color: var(--gray-light);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vibe-pill.active {
+    color: var(--ink);
+    border-color: transparent;
+  }
+
+  .vibe-pill[data-vibe="light"].active   { background: var(--cream); color: #3A3620; border-color: #BFBB8A; }
+  .vibe-pill[data-vibe="deep"].active    { background: var(--green); color: #C8E0D2; }
+  .vibe-pill[data-vibe="chaotic"].active { background: var(--yellow); color: #3A3A00; }
+  .vibe-pill[data-vibe="nostalgic"].active { background: var(--blue); color: #1A2A3A; }
+  .vibe-pill[data-vibe="spicy"].active   { background: var(--cranberry); color: #F0D0D4; }
+
+  .vibe-pill:not(.active):hover {
+    color: var(--ink);
+    border-color: var(--gray);
+  }
+
+  /* ── QUESTION CARD ── */
+  .card-wrap {
+    position: relative;
+    margin-bottom: 24px;
+    perspective: 1000px;
+  }
+
+  .card {
+    border-radius: 20px;
+    padding: 32px 28px 28px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background .4s ease, transform .15s ease;
+    transform-style: preserve-3d;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card.flip {
+    animation: cardflip .35s ease;
+  }
+
+  @keyframes cardflip {
+    0%   { transform: rotateY(0deg) scale(1); }
+    50%  { transform: rotateY(90deg) scale(0.95); opacity: 0; }
+    51%  { transform: rotateY(-90deg) scale(0.95); opacity: 0; }
+    100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+  }
+
+  /* card colors per vibe */
+  .card[data-vibe="light"]    { background: var(--cream); }
+  .card[data-vibe="deep"]     { background: var(--green); }
+  .card[data-vibe="chaotic"]  { background: var(--yellow); }
+  .card[data-vibe="nostalgic"]{ background: var(--blue); }
+  .card[data-vibe="spicy"]    { background: var(--cranberry); }
+
+  .card-top {}
+
+  .depth-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .depth-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .depth-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    transition: background .3s;
+  }
+
+  .question-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    transition: color .4s;
+  }
+
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 28px;
+  }
+
+  .vibe-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  /* color themes for card text */
+  .card[data-vibe="light"] .depth-label,
+  .card[data-vibe="light"] .vibe-tag    { color: #6A6430; }
+  .card[data-vibe="light"] .question-text { color: #1C1A14; }
+  .card[data-vibe="light"] .depth-dot.filled { background: #6A6430; }
+  .card[data-vibe="light"] .depth-dot:not(.filled) { background: rgba(106,100,48,.25); }
+
+  .card[data-vibe="deep"] .depth-label,
+  .card[data-vibe="deep"] .vibe-tag    { color: #8AB89A; }
+  .card[data-vibe="deep"] .question-text { color: #E8F4EC; }
+  .card[data-vibe="deep"] .depth-dot.filled { background: #8AB89A; }
+  .card[data-vibe="deep"] .depth-dot:not(.filled) { background: rgba(138,184,154,.25); }
+
+  .card[data-vibe="chaotic"] .depth-label,
+  .card[data-vibe="chaotic"] .vibe-tag    { color: #7A7A00; }
+  .card[data-vibe="chaotic"] .question-text { color: #1C1A14; }
+  .card[data-vibe="chaotic"] .depth-dot.filled { background: #7A7A00; }
+  .card[data-vibe="chaotic"] .depth-dot:not(.filled) { background: rgba(122,122,0,.25); }
+
+  .card[data-vibe="nostalgic"] .depth-label,
+  .card[data-vibe="nostalgic"] .vibe-tag    { color: #3A5A7A; }
+  .card[data-vibe="nostalgic"] .question-text { color: #1A2A3A; }
+  .card[data-vibe="nostalgic"] .depth-dot.filled { background: #3A5A7A; }
+  .card[data-vibe="nostalgic"] .depth-dot:not(.filled) { background: rgba(58,90,122,.25); }
+
+  .card[data-vibe="spicy"] .depth-label,
+  .card[data-vibe="spicy"] .vibe-tag    { color: #E0BCC2; }
+  .card[data-vibe="spicy"] .question-text { color: #FAF0F2; }
+  .card[data-vibe="spicy"] .depth-dot.filled { background: #E0BCC2; }
+  .card[data-vibe="spicy"] .depth-dot:not(.filled) { background: rgba(224,188,194,.25); }
+
+  /* ── DEEPER PROMPT ── */
+  .deeper-wrap {
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all .3s ease;
+    pointer-events: none;
+  }
+
+  .deeper-wrap.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .deeper-card {
+    background: var(--peach);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border-left: 3px solid var(--dusty);
+  }
+
+  .deeper-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--dusty);
+    margin-bottom: 8px;
+  }
+
+  .deeper-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    line-height: 1.35;
+    color: #5A2E1E;
+  }
+
+  /* ── ACTIONS ── */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--gray-light);
+    background: transparent;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all .18s ease;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+  }
+
+  .btn:hover { border-color: var(--ink); color: var(--ink); }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-deeper {
+    border-color: var(--dusty);
+    color: var(--dusty);
+  }
+  .btn-deeper:hover { background: var(--peach); border-color: var(--dusty); color: #5A2E1E; }
+  .btn-deeper.active { background: var(--peach); border-color: var(--dusty); color: #5A2E1E; }
+
+  /* ── BOTTOM ROW ── */
+  .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 40px;
+  }
+
+  .counter {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--gray);
+  }
+
+  .save-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color .15s;
+    padding: 4px 0;
+  }
+  .save-btn:hover { color: var(--ink); }
+  .save-btn.saved { color: var(--dusty); }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: .5;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header>
+    <span class="wordmark">drop a topic</span>
+    <span class="session-info">in the pit</span>
+  </header>
+
+  <div class="vibe-label">pick a vibe</div>
+  <div class="vibe-row">
+    <button class="vibe-pill active" data-vibe="light" onclick="setVibe('light',this)">light</button>
+    <button class="vibe-pill" data-vibe="deep" onclick="setVibe('deep',this)">deep</button>
+    <button class="vibe-pill" data-vibe="chaotic" onclick="setVibe('chaotic',this)">chaotic</button>
+    <button class="vibe-pill" data-vibe="nostalgic" onclick="setVibe('nostalgic',this)">nostalgic</button>
+    <button class="vibe-pill" data-vibe="spicy" onclick="setVibe('spicy',this)">spicy</button>
+  </div>
+
+  <div class="card-wrap">
+    <div class="card" id="card" data-vibe="light">
+      <div class="card-top">
+        <div class="depth-label">
+          <div class="depth-dots" id="dots"></div>
+          <span id="depth-txt">depth 1 of 3</span>
+        </div>
+        <div class="question-text" id="question-text">What's a skill you have that genuinely surprises people?</div>
+      </div>
+      <div class="card-bottom">
+        <span class="vibe-tag" id="vibe-tag">light</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="deeper-wrap" id="deeper-wrap">
+    <div class="deeper-card">
+      <div class="deeper-eyebrow">go deeper ↓</div>
+      <div class="deeper-text" id="deeper-text"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="shuffle()">shuffle ↻</button>
+    <button class="btn btn-deeper" id="deeper-btn" onclick="toggleDeeper()">go deeper</button>
+  </div>
+
+  <div class="bottom-row">
+    <span class="counter" id="counter">1 of 6</span>
+    <button class="save-btn" id="save-btn" onclick="toggleSave()">save card</button>
+  </div>
+
+</div>
+
+<script>
+const questions = {
+  light: [
+    { q: "What's a skill you have that genuinely surprises people?", depth: 1, follow: "When did you first realize you were good at it?" },
+    { q: "What's a food you hated as a kid that you secretly love now?", depth: 1, follow: "Do you remember the exact moment you changed your mind?" },
+    { q: "What's the most useless skill you're actually proud of?", depth: 1, follow: "Has it ever accidentally come in handy?" },
+    { q: "What compliment have you never forgotten?", depth: 2, follow: "Do you think the person knew how much it meant?" },
+    { q: "What's a movie you've seen more times than you'd admit?", depth: 1, follow: "What keeps pulling you back to it?" },
+    { q: "If you could only eat one cuisine for the rest of the year, what would it be?", depth: 1, follow: "What dish would you miss most from everything else?" },
+  ],
+  deep: [
+    { q: "What version of yourself did you have to leave behind to become who you are now?", depth: 3, follow: "Do you ever miss that version of yourself?" },
+    { q: "What's something you used to believe about yourself that you don't anymore?", depth: 3, follow: "What changed — a moment, or a slow drift?" },
+    { q: "When did you last feel genuinely proud of something you did?", depth: 2, follow: "Did you let yourself sit with that feeling, or did you move on quickly?" },
+    { q: "What's a version of your life you almost lived?", depth: 3, follow: "Do you ever wonder about it, or have you made peace with it?" },
+    { q: "What do you wish people asked you about more?", depth: 2, follow: "Why do you think they don't?" },
+    { q: "What's a fear you've never told anyone about?", depth: 3, follow: "Where do you think it comes from?" },
+  ],
+  chaotic: [
+    { q: "What's your villain origin story — the one that actually makes sense?", depth: 1, follow: "Are you sure you're not still in that arc?" },
+    { q: "If you had to describe your personality as a piece of furniture, what is it?", depth: 1, follow: "Is that the furniture you'd want to be, or just the most accurate?" },
+    { q: "What hill will you die on that genuinely does not matter at all?", depth: 2, follow: "Has anyone ever changed your mind on this? Even slightly?" },
+    { q: "Assign everyone in this room a 70s interior design era. Explain your choices.", depth: 1, follow: "Who's most offended by their assignment?" },
+    { q: "What's the worst advice you've ever followed and somehow it worked out?", depth: 2, follow: "Would you give that advice to someone else?" },
+    { q: "If your life had a director's commentary track, what would be the most embarrassing revelation?", depth: 2, follow: "Is there anyone in this room who already knows that story?" },
+  ],
+  nostalgic: [
+    { q: "What's a song that takes you back to a specific moment every single time?", depth: 2, follow: "Can you still access that feeling when you hear it, or has it faded?" },
+    { q: "What did you want to be when you grew up, and do you remember exactly why?", depth: 2, follow: "Is any part of that still alive in what you do now?" },
+    { q: "What's the best summer you remember having?", depth: 1, follow: "What made it feel so different from others?" },
+    { q: "What's something from your childhood that you wish still existed?", depth: 1, follow: "Is there a modern version of it that almost hits, but not quite?" },
+    { q: "What's a smell that takes you somewhere completely specific?", depth: 2, follow: "Is it a good place or a complicated one?" },
+    { q: "Who was the first person outside your family who made you feel truly seen?", depth: 3, follow: "Are you still in touch with them?" },
+  ],
+  spicy: [
+    { q: "What's an opinion you hold that most people in this room would push back on?", depth: 2, follow: "Has anyone ever actually changed your mind on this?" },
+    { q: "What's something you've completely reversed your position on in the last two years?", depth: 2, follow: "What was the moment that cracked it open?" },
+    { q: "What's a boundary you've set that other people thought was strange?", depth: 3, follow: "Do you still hold it, or has it shifted?" },
+    { q: "What's something you'd never say first, but would say if someone else opened the door?", depth: 2, follow: "Is there someone in this room you'd say it to right now?" },
+    { q: "What's the most honest thing you've said to someone that you weren't sure they were ready to hear?", depth: 3, follow: "How did they take it?" },
+    { q: "What's a belief you inherited that you've quietly let go of?", depth: 3, follow: "Did you ever tell the person you inherited it from?" },
+  ],
+};
+
+let currentVibe = 'light';
+let currentIdx = 0;
+let deeperVisible = false;
+let saved = false;
+
+function getCurrentList() { return questions[currentVibe]; }
+function getCurrentQ() { return getCurrentList()[currentIdx]; }
+
+function setVibe(vibe, el) {
+  if (vibe === currentVibe) return;
+  currentVibe = vibe;
+  currentIdx = 0;
+  deeperVisible = false;
+  saved = false;
+  document.querySelectorAll('.vibe-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  render(true);
+}
+
+function shuffle() {
+  const list = getCurrentList();
+  let next = currentIdx;
+  while (next === currentIdx && list.length > 1) next = Math.floor(Math.random() * list.length);
+  currentIdx = next;
+  deeperVisible = false;
+  saved = false;
+  render(true);
+}
+
+function toggleDeeper() {
+  deeperVisible = !deeperVisible;
+  const wrap = document.getElementById('deeper-wrap');
+  const btn  = document.getElementById('deeper-btn');
+  wrap.classList.toggle('visible', deeperVisible);
+  btn.classList.toggle('active', deeperVisible);
+}
+
+function toggleSave() {
+  saved = !saved;
+  const btn = document.getElementById('save-btn');
+  btn.textContent = saved ? 'saved ✦' : 'save card';
+  btn.classList.toggle('saved', saved);
+}
+
+function render(animate) {
+  const q    = getCurrentQ();
+  const card = document.getElementById('card');
+  const list = getCurrentList();
+
+  if (animate) {
+    card.classList.remove('flip');
+    void card.offsetWidth;
+    card.classList.add('flip');
+  }
+
+  card.dataset.vibe = currentVibe;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('vibe-tag').textContent = currentVibe;
+  document.getElementById('depth-txt').textContent = `depth ${q.depth} of 3`;
+  document.getElementById('deeper-text').textContent = q.follow;
+  document.getElementById('counter').textContent = `${currentIdx + 1} of ${list.length}`;
+
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const d = document.createElement('div');
+    d.className = 'depth-dot' + (i < q.depth ? ' filled' : '');
+    dotsEl.appendChild(d);
+  }
+
+  const deeperWrap = document.getElementById('deeper-wrap');
+  const deeperBtn  = document.getElementById('deeper-btn');
+  if (!deeperVisible) { deeperWrap.classList.remove('visible'); deeperBtn.classList.remove('active'); }
+
+  const saveBtn = document.getElementById('save-btn');
+  saveBtn.textContent = 'save card';
+  saveBtn.classList.remove('saved');
+}
+
+render(false);
+</script>
+</body>
+</html>
