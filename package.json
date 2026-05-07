@@ -1,0 +1,23 @@
+{
+  "name": "pit",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "expo start",
+    "ios": "open -a Simulator && expo start --localhost",
+    "ios:open": "expo start --localhost --ios",
+    "start:tunnel": "expo start --tunnel",
+    "android": "expo start --android",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "expo": "~54.0.33",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "private": true
+}
